@@ -2,5 +2,5 @@
   "eslint.packageManager": "/opt/homebrew/bin/npm",
   "eslint.nodePath": "/opt/homebrew/bin/node",
   "workspace.workspaceFolderCheckCwd": false,
-  "tsserver.tsdk": "/opt/homebrew/lib/node_modules/typescript/lib/"
+  "tsserver.tsdk": "/opt/homebrew/lib/node_modules/typescript/lib/",
 }

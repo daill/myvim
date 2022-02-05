@@ -11,8 +11,9 @@ call plug#begin()
   Plug 'mbbill/undotree'              " Anzeigen von alten Revisionen
   Plug 'vim-scripts/SearchComplete'   " Autocompletion auch in der Suche aktivieren
   Plug 'itchyny/lightline.vim'        " Statuszeile mit mehr Informationen
-  Plug 'morhetz/gruvbox'              " Farbschema Alternative
+  "Plug 'gruvbox-community/gruvbox'              " Farbschema Alternative
   Plug 'junegunn/limelight.vim'       " Fokus auf aktuellen Absatz
+  Plug 'sonph/onehalf', { 'rtp': 'vim' }
   Plug 'junegunn/goyo.vim'            " Alles ausblenden
   Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } } " Markdown Preview
   Plug 'yegappan/mru'                 " Most Recently Used über :MRU 
@@ -21,9 +22,10 @@ call plug#begin()
   Plug 'preservim/nerdtree'           " Erweiterter Filebrowser
   Plug 'Xuyuanp/nerdtree-git-plugin'  " Erweiterung für Git
   Plug 'airblade/vim-gitgutter'       " Änderungen (Git) anzeigen
-  Plug 'neoclide/coc.nvim'            " Umfangreiches Autocompletion und mehr
+  Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'yarn install --frozen-lockfile'}
   Plug 'liuchengxu/vista.vim'         " Functions, Variablen anzeigen
-  Plug 'shaunsingh/nord.nvim'         " Nord theme
+  Plug 'leafOfTree/vim-svelte-plugin' " svelte plugin
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " well treesitter
 call plug#end() " Plugins aktivieren
 
 " Automatisch fehlende Plugins installieren
@@ -54,7 +56,7 @@ set nowrap          " Wrap standardmäßig abschalten. Mit Leader w an-/abschalt
 if has('termguicolors')
     set termguicolors     " Wenn Farben nicht passen, dann die Zeile auskommentieren (z.B. macOS Terminal)	
 endif
-colorscheme nord       " Farbschema aktivieren
+colorscheme onehalfdark       " Farbschema aktivieren
 
 
 " ### Suche
@@ -169,7 +171,7 @@ command! LoadLastSession call LoadSession()
 
 " Lightline Coloscheme + Vista in Statuszeile
 let g:lightline = {             
-      \ 'colorscheme': 'nord',
+      \ 'colorscheme': 'onehalfdark',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'readonly', 'filename', 'modified', 'method' ] ]
@@ -194,7 +196,9 @@ let g:coc_global_extensions = [
       \'coc-tsserver', 
       \'coc-json', 
       \'coc-css', 
-      \'coc-git'
+      \'coc-git',
+      \'coc-rust-analyzer',
+      \'coc-svelte',
       \]
 
 " Use tab for trigger completion with characters ahead and navigate.
