@@ -3,4 +3,5 @@
   "eslint.nodePath": "/opt/homebrew/bin/node",
   "workspace.workspaceFolderCheckCwd": false,
   "tsserver.tsdk": "/opt/homebrew/lib/node_modules/typescript/lib/",
+  "svelte.enable-ts-plugin": true,
 }

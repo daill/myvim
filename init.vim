@@ -13,7 +13,8 @@ call plug#begin()
   Plug 'itchyny/lightline.vim'        " Statuszeile mit mehr Informationen
   "Plug 'gruvbox-community/gruvbox'              " Farbschema Alternative
   Plug 'junegunn/limelight.vim'       " Fokus auf aktuellen Absatz
-  Plug 'sonph/onehalf', { 'rtp': 'vim' }
+  #Plug 'sonph/onehalf', { 'rtp': 'vim' }
+  Plug 'tomasiser/vim-code-dark'
   Plug 'junegunn/goyo.vim'            " Alles ausblenden
   Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } } " Markdown Preview
   Plug 'yegappan/mru'                 " Most Recently Used über :MRU 
@@ -56,7 +57,7 @@ set nowrap          " Wrap standardmäßig abschalten. Mit Leader w an-/abschalt
 if has('termguicolors')
     set termguicolors     " Wenn Farben nicht passen, dann die Zeile auskommentieren (z.B. macOS Terminal)	
 endif
-colorscheme onehalfdark       " Farbschema aktivieren
+colorscheme codedark       " Farbschema aktivieren
 
 
 " ### Suche
@@ -171,7 +172,7 @@ command! LoadLastSession call LoadSession()
 
 " Lightline Coloscheme + Vista in Statuszeile
 let g:lightline = {             
-      \ 'colorscheme': 'onehalfdark',
+      \ 'colorscheme': 'codedark',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'readonly', 'filename', 'modified', 'method' ] ]
