@@ -17,7 +17,7 @@ call plug#begin()
   " Plug 'junegunn/goyo.vim'            " Alles ausblenden
   Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } } " Markdown Preview
   Plug 'yegappan/mru'                 " Most Recently Used über :MRU 
-  Plug '9mm/vim-closer'               " Intelligente Klammern und co.
+"  Plug '9mm/vim-closer'               " Intelligente Klammern und co.
   Plug 'justinmk/vim-sneak'           " Sehr schnelles springen im Code
   Plug 'preservim/nerdtree'           " Erweiterter Filebrowser
   Plug 'Xuyuanp/nerdtree-git-plugin'  " Erweiterung für Git
@@ -64,8 +64,8 @@ set smartcase     " Aber wenn Großbuchstaben verwenden werden dann schon
 
 
 " ### Sprache und Rechtschreibkorrektur
-set helplang=de             " Deutsche Hilfe
-set spelllang=de_de,en_us   " Deutsche und englische Rechtschreibung
+set helplang=en             " Deutsche Hilfe
+set spelllang=en_us   " Deutsche und englische Rechtschreibung
 "set spell                  " Rechtschreibkorrektur immer aktivieren
 autocmd FileType markdown setlocal spell   " Spell bei Markdown aktivieren
 autocmd FileType text setlocal spell       " Spell bei allgemeinen Textfiles aktivieren
@@ -232,6 +232,8 @@ endfunction
 
 " coc-highlight - Gleiche Wörter im Code markieren
 autocmd CursorHold * silent call CocActionAsync('highlight')
+
+autocmd FileType * let b:coc_pairs_disabled = ["<"]
 
 " Zeigt Fehler mit Markierung der Zeile an und Fehlercode, wenn man auf der Zeile steht
 augroup mygroup
