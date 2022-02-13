@@ -1,6 +1,6 @@
 " ### Plugins
 
-" Installation Pluginmanager
+" Install Plug
 if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
   silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -12,8 +12,9 @@ call plug#begin()
   Plug 'vim-scripts/SearchComplete'   " Autocompletion auch in der Suche aktivieren
   Plug 'itchyny/lightline.vim'        " Statuszeile mit mehr Informationen
   Plug 'junegunn/limelight.vim'       " Fokus auf aktuellen Absatz
-  Plug 'navarasu/onedark.nvim'
-  Plug 'junegunn/goyo.vim'            " Alles ausblenden
+  Plug 'navarasu/onedark.nvim'        " theme
+  Plug 'hallzy/lightline-onedark'     " theme for lightline
+  " Plug 'junegunn/goyo.vim'            " Alles ausblenden
   Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } } " Markdown Preview
   Plug 'yegappan/mru'                 " Most Recently Used über :MRU 
   Plug '9mm/vim-closer'               " Intelligente Klammern und co.
@@ -22,9 +23,7 @@ call plug#begin()
   Plug 'Xuyuanp/nerdtree-git-plugin'  " Erweiterung für Git
   Plug 'airblade/vim-gitgutter'       " Änderungen (Git) anzeigen
   Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'yarn install --frozen-lockfile'}
-  Plug 'liuchengxu/vista.vim'         " Functions, Variablen anzeigen
-  Plug 'leafOfTree/vim-svelte-plugin' " svelte plugin
-  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " well treesitter
+  Plug 'sheerun/vim-polyglot'
 call plug#end() " Plugins aktivieren
 
 " Automatisch fehlende Plugins installieren
@@ -190,7 +189,6 @@ let g:coc_global_extensions = [
       \'coc-prettier',
       \'coc-jedi',
       \'coc-html',
-      \'coc-highlight',
       \'coc-eslint',
       \'coc-tsserver', 
       \'coc-json', 
