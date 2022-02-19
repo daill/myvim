@@ -111,7 +111,7 @@ function! MakeSession()
   let b:filename = b:sessiondir.'/autosession.vim'
   exe "mksession! ".b:filename
 endfunction
-"au VimLeave * :call MakeSession()
+au VimLeave * :call MakeSession()
 
 function! LoadSession()
   let b:sessiondir = stdpath('config').'/sessions'
