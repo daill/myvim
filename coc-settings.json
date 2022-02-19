@@ -1,7 +1,0 @@
-{
-  "eslint.packageManager": "C:/Devel/nodejs/npm.cmd",
-  "eslint.nodePath": "C:/Devel/nodejs/node.exe",
-  "tsserver.tsdk": "C:/Users/daill/AppData/Roaming/npm/node_modules/typescript/lib",
-  "rust-analyzer.server.path": "C:/Users/daill/.cargo/bin/rust-analyzer.exe",
-  "svelte.enable-ts-plugin": true,
-}

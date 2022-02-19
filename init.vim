@@ -1,109 +1,84 @@
-" ### Plugins
-
-" Install Plug
-if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
-  silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+" install plug automatically
+let data_dir = stdpath('config') 
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 call plug#begin()
-  Plug 'mbbill/undotree'              " Anzeigen von alten Revisionen
-  Plug 'vim-scripts/SearchComplete'   " Autocompletion auch in der Suche aktivieren
-  Plug 'itchyny/lightline.vim'        " Statuszeile mit mehr Informationen
-  Plug 'junegunn/limelight.vim'       " Fokus auf aktuellen Absatz
-  Plug 'navarasu/onedark.nvim'        " theme
-  Plug 'hallzy/lightline-onedark'     " theme for lightline
-  " Plug 'junegunn/goyo.vim'            " Alles ausblenden
-  Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } } " Markdown Preview
-  Plug 'yegappan/mru'                 " Most Recently Used über :MRU 
-"  Plug '9mm/vim-closer'               " Intelligente Klammern und co.
-  Plug 'justinmk/vim-sneak'           " Sehr schnelles springen im Code
-  Plug 'preservim/nerdtree'           " Erweiterter Filebrowser
-  Plug 'Xuyuanp/nerdtree-git-plugin'  " Erweiterung für Git
-  Plug 'airblade/vim-gitgutter'       " Änderungen (Git) anzeigen
-  Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'yarn install --frozen-lockfile'}
-  Plug 'sheerun/vim-polyglot'
-call plug#end() " Plugins aktivieren
+	Plug 'navarasu/onedark.nvim'                                  " theme
+  Plug 'preservim/nerdtree'                                     " extended filebrowser
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}   " parsing library
+  Plug 'neovim/nvim-lspconfig'
+  Plug 'hrsh7th/cmp-nvim-lsp'
+  Plug 'hrsh7th/cmp-buffer'
+  Plug 'hrsh7th/cmp-path'
+  Plug 'hrsh7th/cmp-cmdline'
+  Plug 'hrsh7th/nvim-cmp'
+  Plug 'hrsh7th/cmp-vsnip'
+  Plug 'hrsh7th/vim-vsnip'
+  Plug 'itchyny/lightline.vim'
+  Plug 'hallzy/lightline-onedark'
+  Plug 'mbbill/undotree'
+call plug#end()
 
-" Automatisch fehlende Plugins installieren
-autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-  \| PlugInstall --sync | source $MYVIMRC
-\| endif
+" some settings
+syntax on           " enable highlighting
+set number          " line numbers
+set relativenumber  " relative numbering
+set linebreak       " don't break word, create new line
+set showmode        " show current mode in status line
+set scrolloff=5     " keep cursor at top while scrolling
+set mouse=a         " scroll with mouse
+set lazyredraw      " reduces redraws
+set cursorline      " mark active line
+set updatetime=300  " faster drawing
+set laststatus=2    " always show status line
+set cmdheight=2     " more space for messages
+set shortmess+=c    " don't pass messages to ins-completion-menu
+set nowrap          " disable wrap)
 
-
-" ### Darstellungsoptionen
-syntax on           " Syntax Highlighting aktiveren
-set number          " Line Numbers anzeigen
-set relativenumber  " Relative Nummerierung anzeigen
-set linebreak       " Ganze Wörter in neue Zeile umbrechen
-set showmode        " Aktuellen Modus in Statuszeile anzeigen
-set scrolloff=5     " Cursor bei Scroll weiter oben halten
-set mouse=a         " Scrollen mit der Mouse in Console und tmux
-set lazyredraw      " Weniger Redraws bei Macros und co.
-set cursorline      " Aktive Zeile markieren
-set updatetime=300  " Schellere Darstellung	/ Refresh
-"set cc=80          " Markierung 80 Zeilen-Rand
-set laststatus=2    " Statuszeile immer anzeigen
-set cmdheight=2     " Mehr Platz für Statusmeldungen
-set shortmess+=c    " Don't pass messages to |ins-completion-menu|
-set nowrap          " Wrap standardmäßig abschalten. Mit Leader w an-/abschalten
-
-
-" ##  Optik und Farben
+" color fallback
 if has('termguicolors')
-    set termguicolors     " Wenn Farben nicht passen, dann die Zeile auskommentieren (z.B. macOS Terminal)	
+    set termguicolors
 endif
-colorscheme onedark       " Farbschema aktivieren
+colorscheme onedark
 
+" search enhancements
+set path+=**	" :find for subfolders
+set ignorecase
+set smartcase 	" if intentional accept case
 
-" ### Suche
-set path+=**      " Damit kann mit :find alles, auch in Subfolder gefunden werden
-set ignorecase    " Suche nicht Case-Sensentiv
-set smartcase     " Aber wenn Großbuchstaben verwenden werden dann schon
+" language
+set helplang=en
+set spelllang=en,de
 
+autocmd FileType markdown setlocal spell
+autocmd FileType text setlocal spell
 
-" ### Sprache und Rechtschreibkorrektur
-set helplang=en             " Deutsche Hilfe
-set spelllang=en_us   " Deutsche und englische Rechtschreibung
-"set spell                  " Rechtschreibkorrektur immer aktivieren
-autocmd FileType markdown setlocal spell   " Spell bei Markdown aktivieren
-autocmd FileType text setlocal spell       " Spell bei allgemeinen Textfiles aktivieren
-
-
-" ### Verhalten für Backup, Swap und co.
-if !isdirectory($HOME."/.local/share/nvim/undodir")
-    call mkdir($HOME."/.local/share/nvim/undodir", "p", 0700)
+if !isdirectory($HOME."/.nvim/undodir")
+    call mkdir($HOME."/.nvim/undodir", "p", 0700)
 endif
-set undodir=~/.local/share/nvim/undodir     " Alle Veränderungen werden hier aufgezeichnet
-set undofile		                            " Alle Änderungen werden endlos in oberen undodir protokolliert
-if !isdirectory($HOME."/.local/share/nvim/swap")
-    call mkdir($HOME."/.local/share/nvim/swap", "p", 0700)
-endif
-set directory=~/.local/share/nvim/swap      " Zentrale Ablage der Swap-Files
-"set noswapfile     " Falls kein Swap-Files erstellen werden soll
-set nobackup        " Backfile wird sofort wirder gelöscht, da Restores über Undofiles möglich
-set hidden          " Wechsel von Buffern auch, wenn File nicht gespeichert
+set undodir=$HOME/.nvim/undodir
+set undofile
+set nobackup
+set hidden
 
+" tabs
+set tabstop=2 softtabstop=2 shiftwidth=2
+set expandtab
+set formatoptions+=j
 
-" ### Verhalten von TABs und Einrücken bei Code 
-set tabstop=2 softtabstop=2	shiftwidth=2    " Nur zwei Tab-Stopp einfügen
-set expandtab           " Tabs in Spaces wandeln
-set formatoptions+=j    " Immer Spaces anstatt Tabs
-"set clipboard=unnamed  " Standard-Register (yy, dd, etc) IMMER in Zwischenablage kopieren 
+" file browser settings
+let g:netrw_banner = 0        " disable banner
+let g:netrw_browse_split = 4  " open in same window
+let g:netrw_altv = 1          " split right
+let g:netrw_liststyle = 3     " tree view
+let g:netrw_winsize = 25      " shrink window
+let g:netrw_list_hide = netrw_gitignore#Hide()    " hide .git
+let g:netrw_list_hide.=',\(^\|\s\s)\zs\.\S\+'     " hide . files
 
-
-" ### Interner Filemanager (Explore, VExplore, SExplore) optimieren
-let g:netrw_banner = 0        " Banner abschalten
-let g:netrw_browse_split = 4  " im gleichen Fenster öffnen
-let g:netrw_altv = 1          " Split rechts öffnen
-let g:netrw_liststyle = 3     " Tree View
-let g:netrw_winsize = 25      " Fenster schmälter machen
-let g:netrw_list_hide = netrw_gitignore#Hide()    " Gits ausblenden	
-let g:netrw_list_hide.=',\(^\|\s\s)\zs\.\S\+'     " Dotfiles ausblenden
-
-
-" ### NERDTree 
+" nerdtree settings
 let NERDTreeIgnore = ['\.pyc$', '__pycache__']
 let NERDTreeMinimalUI = 1
 let g:nerdtree_open = 0
@@ -124,50 +99,33 @@ function! StartUp()
         let g:nerdtree_open = 1
     end
 endfunction
-"autocmd VimEnter * call StartUp()    " Nerdtree anzeigen beim Start, wenn man keine Datei öffnet
+autocmd VimEnter * call StartUp()
 
-
-" ### Fokusiertes Arbeiten (Befehl :Fokus)
-let g:limelight_conceal_ctermfg = 240
-function FokusStart()
-  Limelight
-	Goyo
-endfunction
-command! Fokus call FokusStart()
-function FokusEnde()
-  Limelight!  " Beim Beenden von Goyo Limelight auch beenden
-endfunction
-autocmd! User GoyoLeave call FokusEnde() " Wenn Goyo beendet wird, dann Fokus auch beenden
-
-
-" ### Sessions
-" Automatisch letzte Session speichern
+" save settiongs
 function! MakeSession()
-  let b:sessiondir = $HOME . "/.config/nvim/sessions"
+  let b:sessiondir = stdpath('config').'/sessions'
   if (filewritable(b:sessiondir) != 2)
     exe 'silent !mkdir -p ' b:sessiondir
     redraw!
   endif
-  let b:filename = b:sessiondir . '/autosession.vim'
-  exe "mksession! " . b:filename
+  let b:filename = b:sessiondir.'/autosession.vim'
+  exe "mksession! ".b:filename
 endfunction
-au VimLeave * :call MakeSession()
+"au VimLeave * :call MakeSession()
 
-" Command LoadLastSession ladet die letzte gespeicherte Session
 function! LoadSession()
-  let b:sessiondir = $HOME . "/.config/nvim/sessions"
-  let b:sessionfile = b:sessiondir . "/autosession.vim"
+  let b:sessiondir = stdpath('config').'/sessions'
+  let b:sessionfile = b:sessiondir.'/autosession.vim'
   if (filereadable(b:sessionfile))
-    exe 'source ' b:sessionfile
+    exe 'source '.b:sessionfile
   else
     echo "No session loaded."
   endif
 endfunction
-command! LoadLastSession call LoadSession()
+"command! LoadLastSession call LoadSession()
 
-" ### Allgemeine Settings
 
-" Lightline Coloscheme + Vista in Statuszeile
+" lightline & vista
 let g:lightline = {             
       \ 'colorscheme': 'onedark',
       \ 'active': {
@@ -178,96 +136,119 @@ let g:lightline = {
       \   'method': 'NearestMethodOrFunction'
       \ },
       \ }
-let vim_markdown_preview_github=1   " Github-Erweiterungen von Markdown auch anzeigen
-let g:sneak#label = 1               " Sneak-Vimi Label zum schnellen springen aktivieren.
+let vim_markdown_preview_github=1
 
-" ### COC
-
-" Automatisch COC Extensions installieren
-let g:coc_global_extensions = [
-      \'coc-snippets',
-      \'coc-prettier',
-      \'coc-jedi',
-      \'coc-html',
-      \'coc-eslint',
-      \'coc-tsserver', 
-      \'coc-json', 
-      \'coc-css', 
-      \'coc-git',
-      \'coc-rust-analyzer',
-      \'coc-svelte',
-      \]
-
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+" tab for completion
 
 function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-" Use `[g` and `]g` to navigate diagnostics
-" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
-nmap <silent> (g <Plug>(coc-diagnostic-prev)   " Anpassung für deutsche Tastatur
-nmap <silent> )g <Plug>(coc-diagnostic-next)
-
-" Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>
-
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
   else
     execute '!' . &keywordprg . " " . expand('<cword>')
   endif
 endfunction
 
-" coc-highlight - Gleiche Wörter im Code markieren
-autocmd CursorHold * silent call CocActionAsync('highlight')
+let mapleader = " "
 
-autocmd FileType * let b:coc_pairs_disabled = ["<"]
-
-" Zeigt Fehler mit Markierung der Zeile an und Fehlercode, wenn man auf der Zeile steht
-augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder.
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-augroup end
-
-" Mit :Format wird der Code automatisch formatiert
-command! -nargs=0 Format :call CocAction('format')
-
-
-" ### Meine Keyboard-Settings
-let mapleader = " "		" Space-Taste als Leader
-
-" Dateihistorie verwalten
-nnoremap <leader>u :UndotreeToggle<CR>      " Tracking der Veränderungen anzeigen/ausblenden
-
-" Öffnen von Dateien und Sessions
+nnoremap <leader>u :UndotreeToggle<CR>
 map <silent> <leader>o :call NERDTreeToggle()<CR>
-"nnoremap <leader>o :Lexplore<CR>           " Links den Filebrowser einblenden (nochmals blendet wieder aus)
-nnoremap <leader>O :MRU<CR>                 " Zeige die zuletzt verwendeten Dateien an
-"nnoremap <leader>O :browse :oldfiles<CR>   " Falls Du MRU nicht verwendest, die interne Funktion
-nnoremap <leader>S :LoadLastSession<CR>     " Lade letzte Session
+nnoremap <leader>S :LoadLastSession<CR>
 
-" Schneller als Ctrl+W + - < >
+
+" cmp settings
+set completeopt=menu,menuone,noselect
+
+lua <<EOF
+  -- Setup nvim-cmp.
+  local cmp = require'cmp'
+
+  cmp.setup({
+    snippet = {
+      -- REQUIRED - you must specify a snippet engine
+      expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+        -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+        -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+      end,
+    },
+    mapping = {
+      ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
+      ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
+      ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+      ['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
+      ['<C-e>'] = cmp.mapping({
+        i = cmp.mapping.abort(),
+        c = cmp.mapping.close(),
+      }),
+      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    },
+    sources = cmp.config.sources({
+      { name = 'nvim_lsp' },
+      { name = 'vsnip' }, -- For vsnip users.
+      -- { name = 'luasnip' }, -- For luasnip users.
+      -- { name = 'ultisnips' }, -- For ultisnips users.
+      -- { name = 'snippy' }, -- For snippy users.
+    }, {
+      { name = 'buffer' },
+    })
+  })
+
+  -- Set configuration for specific filetype.
+  cmp.setup.filetype('gitcommit', {
+    sources = cmp.config.sources({
+      { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it. 
+    }, {
+      { name = 'buffer' },
+    })
+  })
+
+  -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline('/', {
+    sources = {
+      { name = 'buffer' }
+    }
+  })
+
+  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline(':', {
+    sources = cmp.config.sources({
+      { name = 'path' }
+    }, {
+      { name = 'cmdline' }
+    })
+  })
+
+  require'nvim-treesitter.configs'.setup {
+    highlight = {
+      enable = true,
+      -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+      -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+      -- Using this option may slow down your editor, and you may see some duplicate highlights.
+      -- Instead of true it can also be a list of languages
+      additional_vim_regex_highlighting = false,
+    },
+  }
+
+  -- Setup lspconfig.
+  local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+  -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+  require'lspconfig'.svelte.setup{}
+EOF
+
+" faster than Ctrl+W + - < >
 nnoremap <silent> <Leader>+ :vertical resize +5<CR>   " VSplit größer
 nnoremap <silent> <Leader>- :vertical resize -5<CR>   " kleiner machen
 nnoremap <silent> <Leader>* :resize +5<CR>            " HSplit größer machen
 nnoremap <silent> <Leader>_ :resize -5<CR>            " kleiner machen
 
-" Durch Tabs steuern
+" navigate through tabs
 nnoremap <silent> <leader><Left> :tabprevious<CR>
 nnoremap <silent> <leader>h :tabprevious<CR>
 nnoremap <silent> <leader><Right> :tabnext<CR>
@@ -275,24 +256,24 @@ nnoremap <silent> <leader>l :tabnext<CR>
 nnoremap <silent> <leader><Up> :tabnew<CR>
 nnoremap <silent> <leader><Down> :tabclose<CR>
 
-" Durch Buffer steuern
+" navigate through buffers
 nnoremap <silent> <leader>k :bp!<CR>
 nnoremap <silent> <leader>j :bn!<CR>
 
-" Bei Wrap-Zeilen in den Zeilen blättern und nicht in Blöcken
+" while wrapped move lines not blocks
 nnoremap <silent> <A-Down> gj
 nnoremap <silent> <A-Up> gk
 
-" Wrap an-/ausschalten
+" enable/disable wrap
 nnoremap <silent> <leader>w :set wrap!<CR>
 
-" copy, cut and paste direkt in Zwischenablage
+" copy, cut and paste from clipboard
 vmap <C-c> "+y
 vmap <C-x> "+c
 vmap <C-v> c<ESC>"+p
 imap <C-v> <ESC>"+pa
 
-" Sonstiges
+" misc
 nnoremap <silent> <leader>s :nohlsearch<CR>
 nnoremap <silent> <leader>v :Vista!!<CR>
 nnoremap <leader>r :source ~/.config/nvim/init.vim<CR>  " Config neu laden
@@ -300,3 +281,5 @@ command! WriteUnix w ++ff=unix    " Wenn Du eine Dos-Datei in Unix speichern wil
 command! WriteDos w ++ff=dos      " Und anders rum
 command! W w " Weil ich Depp mich ständig vertippe
 command! Q q " Weil ich Depp mich ständig vertippe
+
+
