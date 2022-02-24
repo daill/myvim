@@ -12,6 +12,7 @@ call plug#begin()
   Plug 'itchyny/lightline.vim'
   Plug 'hallzy/lightline-onedark'
   Plug 'mbbill/undotree'
+  Plug 'udalov/kotlin-vim'
 call plug#end()
 
 " some settings
@@ -146,7 +147,23 @@ endfunction
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
-autocmd CursorHold * silent call CocActionAsync('highlight')
+let g:coc_global_extensions = [
+      \'coc-snippets',
+      \'coc-prettier',
+      \'coc-jedi',
+      \'coc-html',
+      \'coc-highlight',
+      \'coc-eslint',
+      \'coc-tsserver', 
+      \'coc-json', 
+      \'coc-css', 
+      \'coc-git',
+      \'coc-rust-analyzer',
+      \'coc-svelte',
+      \'coc-java',
+      \'coc-svelte',
+      \]
+
 
 " Use `[g` and `]g` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
