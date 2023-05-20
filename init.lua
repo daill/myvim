@@ -58,6 +58,9 @@ require("packer").startup(function(use)
 
   -- Undo tree
   use("mbbill/undotree")
+  use("nvim-tree/nvim-tree.lua")
+  use("nvim-tree/nvim-web-devicons")
+  use("nvim-treesitter/nvim-treesitter")
 end)
 
 -- the first run will install packer and our plugins
@@ -80,14 +83,88 @@ vim.o.updatetime=300
 vim.o.laststatus=2
 vim.o.cmdheight=2
 vim.o.shortmess=c
-vim.o.nowrap=true
+vim.wo.wrap=false
+vim.o.ignorecase=true
+vim.o.smartcase=true
+
+vim.g['netrw_browse_split'] = 4
+vim.g['netrw_altv'] = 1
+vim.g['netrw_liststyle'] = 3
+vim.g['netrw_winsize'] = 25
+vim.g['netrw_list_hide'] = (vim.fn["netrw_gitignore#Hide"]()) .. [[,\(^\|\s\s\)\zs\.\S\+]]
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+vim.opt.termguicolors = true
+vim.g.lightline = {
+  colorscheme = 'onedark',
+  active = {
+    left = {
+      { 'mode', 'paste' },
+      { 'readonly', 'filename', 'modified', 'method' }
+    }
+  },
+  component_function = {
+    method = 'NearestMethodOrFunction'
+  }
+}
+vim.o.tabstop = 2
+vim.o.softtabstop = 2
+vim.o.shiftwidth = 2
+vim.o.expandtab = true
+vim.o.formatoptions = vim.o.formatoptions .. 'j'
 
 
--- Set completeopt to have a better completion experience
--- :help completeopt
--- menuone: popup even when there's only one match
--- noinsert: Do not insert text until a selection is made
--- noselect: Do not auto-select, nvim-cmp plugin will handle this for us.
+
+-- Save settings
+local function MakeSession()
+  local sessiondir = vim.fn.stdpath('config') .. '/sessions'
+  if vim.fn.filewritable(sessiondir) ~= 2 then
+    vim.cmd('silent !mkdir -p ' .. sessiondir)
+    vim.cmd('redraw!')
+  end
+  local filename = sessiondir .. '/autosession.vim'
+  vim.cmd('mksession! ' .. filename)
+end
+vim.cmd('autocmd VimLeave * lua MakeSession()')
+
+local function LoadSession()
+  local sessiondir = vim.fn.stdpath('config') .. '/sessions'
+  local sessionfile = sessiondir .. '/autosession.vim'
+  if vim.fn.filereadable(sessionfile) == 1 then
+    vim.cmd('source ' .. sessionfile)
+  else
+    print('No session loaded.')
+  end
+end
+vim.cmd('command! LoadLastSession lua LoadSession()')
+
+require("nvim-tree").setup()
+
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "rust" },
+
+  sync_install = false,
+
+  auto_install = true,
+
+  ignore_install = { "javascript" },
+
+
+  highlight = {
+    enable = true,
+    disable = { "c", "rust" },
+    disable = function(lang, buf)
+        local max_filesize = 100 * 1024 -- 100 KB
+        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+        if ok and stats and stats.size > max_filesize then
+            return true
+        end
+    end,
+
+    additional_vim_regex_highlighting = false,
+  },
+}
+
 vim.o.completeopt = "menuone,noinsert,noselect"
 
 -- Avoid showing extra messages when using completion
