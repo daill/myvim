@@ -152,7 +152,7 @@ require'nvim-treesitter.configs'.setup {
 
   highlight = {
     enable = true,
-    disable = { "c", "rust" },
+    disable = { "c" },
     disable = function(lang, buf)
         local max_filesize = 100 * 1024 -- 100 KB
         local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
@@ -247,6 +247,12 @@ cmp.setup({
   },
 })
 
+--------------
+vim.keymap.set('n', '<leader>n', ':NERDTreeFocus<CR>', {})
+vim.keymap.set('n', '<C-n>', ':NERDTree<CR>', {})
+vim.keymap.set('n', '<C-t>', ':NERDTreeToggle<CR>', {})
+vim.keymap.set('n', '<C-f>', ':NERDTreeFind<CR>', {})
+
 
 --------------
 
@@ -261,6 +267,11 @@ vim.keymap.set("n", "gr", vim.lsp.buf.references, keymap_opts)
 vim.keymap.set("n", "g0", vim.lsp.buf.document_symbol, keymap_opts)
 vim.keymap.set("n", "gW", vim.lsp.buf.workspace_symbol, keymap_opts)
 vim.keymap.set("n", "gd", vim.lsp.buf.definition, keymap_opts)
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
+vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
+vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
 -- Set updatetime for CursorHold
 -- 300ms of no cursor movement to trigger CursorHold
 vim.opt.updatetime = 100
