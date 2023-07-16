@@ -61,6 +61,16 @@ require("packer").startup(function(use)
   use("nvim-tree/nvim-tree.lua")
   use("nvim-tree/nvim-web-devicons")
   use("nvim-treesitter/nvim-treesitter")
+  use {
+    'Exafunction/codeium.vim',
+    config = function ()
+      -- Change '<C-g>' here to any keycode you like.
+      vim.keymap.set('i', '<C-g>', function () return vim.fn['codeium#Accept']() end, { expr = true })
+      vim.keymap.set('i', '<c-;>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true })
+      vim.keymap.set('i', '<c-,>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
+      vim.keymap.set('i', '<c-x>', function() return vim.fn['codeium#Clear']() end, { expr = true })
+    end
+  }
 end)
 
 -- the first run will install packer and our plugins
@@ -113,7 +123,7 @@ vim.o.shiftwidth = 2
 vim.o.expandtab = true
 vim.o.formatoptions = vim.o.formatoptions .. 'j'
 
-
+vim.g.code_manual = true
 
 -- Save settings
 local function MakeSession()
@@ -267,6 +277,7 @@ vim.keymap.set("n", "gr", vim.lsp.buf.references, keymap_opts)
 vim.keymap.set("n", "g0", vim.lsp.buf.document_symbol, keymap_opts)
 vim.keymap.set("n", "gW", vim.lsp.buf.workspace_symbol, keymap_opts)
 vim.keymap.set("n", "gd", vim.lsp.buf.definition, keymap_opts)
+vim.keymap.set("n", "<C-c>", vim.lsp.buf.code_action, keymap_opts)
 local builtin = require('telescope.builtin')
 vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
 vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
